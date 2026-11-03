@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>彩妆美发 对接人 · 一键复制类目</title>
+<style>
+*{box-sizing:border-box}
+:root{
+  --ink:#12161f; --ink2:#4b5565; --ink3:#8a94a6;
+  --line:#e6e9f0; --bg:#f4f6fa; --card:#fff;
+  --rose:#d6336c; --indigo:#4c5bd4;
+}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"PingFang SC","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;font-size:14px}
+.wrap{max-width:1440px;margin:0 auto;padding:28px 24px 80px}
+
+/* header */
+.top{background:linear-gradient(120deg,#191f2e 0%,#2b3550 55%,#3b3a63 100%);
+  border-radius:20px;padding:26px 30px;color:#fff;position:relative;overflow:hidden}
+.top:after{content:"";position:absolute;right:-60px;top:-80px;width:300px;height:300px;
+  background:radial-gradient(circle,rgba(214,51,108,.5),transparent 65%)}
+.top:before{content:"";position:absolute;right:120px;bottom:-120px;width:260px;height:260px;
+  background:radial-gradient(circle,rgba(76,91,212,.55),transparent 65%)}
+.top h1{margin:0;font-size:24px;letter-spacing:.5px;font-weight:600;position:relative}
+.top .lead{margin:9px 0 0;color:#c3cbdd;font-size:13.5px;position:relative;letter-spacing:.2px}
+.top .lead:first-of-type{margin-top:14px}
+.top .lead b{color:#fff;font-weight:500}
+.top .tip{margin:16px 0 0;position:relative}
+.top .tip .k{display:inline-block;font-size:12.5px;color:#e8ecf6;background:rgba(255,255,255,.11);
+  border:1px solid rgba(255,255,255,.16);border-radius:20px;padding:5px 14px}
+
+/* tabs */
+.tabs{display:inline-flex;gap:4px;padding:5px;background:#fff;border:1px solid var(--line);
+  border-radius:14px;margin:20px 0 0;box-shadow:0 1px 2px rgba(18,22,31,.04)}
+.tab{border:0;background:transparent;font-family:inherit;font-size:13.5px;color:var(--ink2);
+  padding:9px 22px;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:.16s}
+.tab em{font-style:normal;font-size:11px;color:var(--ink3);background:#f2f4f8;
+  border-radius:20px;padding:1px 7px;transition:.16s}
+.tab:hover{color:var(--ink)}
+.tab.on{background:#191f2e;color:#fff;box-shadow:0 6px 16px -10px rgba(18,22,31,.9)}
+.tab.on em{background:rgba(255,255,255,.18);color:#e8ecf6}
+
+/* toolbar */
+.toolbar{display:flex;gap:12px;align-items:center;margin:18px 0 18px}
+.search{flex:1;position:relative;max-width:420px}
+.search input{width:100%;height:42px;border:1px solid var(--line);background:#fff;border-radius:12px;
+  padding:0 14px 0 40px;font-size:13.5px;outline:none;color:var(--ink);font-family:inherit}
+.search input:focus{border-color:#c3c9d8;box-shadow:0 0 0 4px rgba(76,91,212,.08)}
+.search svg{position:absolute;left:13px;top:12px;width:16px;height:16px;fill:none;stroke:#9aa3b5;stroke-width:2}
+.hint{font-size:12px;color:var(--ink3)}
+.tbtn{margin-left:auto;height:42px;padding:0 16px;border:1px solid var(--line);background:#fff;
+  border-radius:12px;font-size:13px;color:var(--ink2);cursor:pointer;font-family:inherit;transition:.15s}
+.tbtn:hover{border-color:#c9cfdd;color:var(--ink);background:#fbfcfe}
+
+/* cta */
+.cta{display:flex;align-items:center;justify-content:space-between;gap:16px;text-decoration:none;
+  margin:0 0 20px;padding:16px 22px;border-radius:16px;position:relative;overflow:hidden;
+  background:linear-gradient(100deg,#191f2e 0%,#312a4d 48%,#5c2b52 100%);
+  color:#fff;box-shadow:0 14px 34px -22px rgba(25,31,46,.9);transition:.2s}
+.cta:after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 88% 20%,rgba(214,51,108,.45),transparent 55%);
+  opacity:.9;pointer-events:none}
+.cta:hover{transform:translateY(-1px);box-shadow:0 18px 40px -22px rgba(25,31,46,.95)}
+.cta-left{display:flex;align-items:center;gap:11px;position:relative}
+.spark{width:26px;height:26px;flex:0 0 26px;display:grid;place-items:center;border-radius:9px;
+  background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);font-size:13px;color:#ffd7a8}
+.cta-text{font-size:16.5px;font-weight:600;letter-spacing:1.2px}
+.cta-right{display:flex;align-items:center;gap:7px;font-size:12.5px;position:relative;
+  background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:20px;padding:7px 14px}
+.cta-right b{font-weight:500;letter-spacing:.5px}
+.cta-right svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;transition:.18s}
+.cta:hover .cta-right svg{transform:translateX(3px)}
+
+/* board */
+.board{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+@media(max-width:1080px){.board{grid-template-columns:1fr}}
+.col-head{display:flex;align-items:center;gap:10px;margin:0 0 12px 2px}
+.col-head .dot{width:9px;height:9px;border-radius:50%}
+.col-head h2{margin:0;font-size:15px;font-weight:600}
+.col-head .tag{font-size:11px;padding:2px 8px;border-radius:20px;color:var(--ink3);background:#fff;border:1px solid var(--line)}
+.pink .dot{background:var(--rose)} .blue .dot{background:var(--indigo)}
+.pink h2{color:#b02b5b} .blue h2{color:#3d4ac0}
+
+.owner{background:var(--card);border:1px solid var(--line);border-radius:16px;
+  padding:6px 6px 8px;margin-bottom:16px;box-shadow:0 1px 2px rgba(18,22,31,.04),0 8px 24px -18px rgba(18,22,31,.25)}
+.owner-head{display:flex;align-items:center;gap:11px;padding:12px 12px 12px}
+.avatar{width:34px;height:34px;flex:0 0 34px;border-radius:11px;display:grid;place-items:center;
+  font-size:15px;font-weight:600;color:#fff}
+.pink .avatar{background:linear-gradient(135deg,#e0558a,#b02b5b)}
+.blue .avatar{background:linear-gradient(135deg,#6673e8,#3d4ac0)}
+.half .avatar{background:linear-gradient(135deg,#3fb8b0,#0f7d79)}
+.owner-info b{font-size:14px;font-weight:600;display:block}
+.owner-info i{font-style:normal;font-size:11.5px;color:var(--ink3);letter-spacing:.2px;display:block;line-height:1.5}
+.owner-info .sub{color:#8a6a3f;font-size:11.5px;margin-top:1px}
+
+.block{padding:0 6px}
+.block-head{display:flex;align-items:center;gap:8px;padding:8px 6px 6px;border-top:1px dashed var(--line);margin-top:4px}
+.owner-head + .block .block-head{border-top:0;margin-top:0}
+.cat{font-size:12.5px;font-weight:600;color:var(--ink2);letter-spacing:.2px}
+.count{font-size:10.5px;color:var(--ink3);background:#f2f4f8;border-radius:20px;padding:1px 7px}
+.all{margin-left:auto;font-size:11.5px;color:var(--ink3);background:transparent;border:0;cursor:pointer;
+  padding:3px 6px;border-radius:8px;font-family:inherit;opacity:0;transition:.15s}
+.block:hover .all{opacity:1}
+.all:hover{background:#f2f4f8;color:var(--ink)}
+
+/* rows */
+.row{display:flex;align-items:center;gap:10px;width:100%;text-align:left;font-family:inherit;
+  background:#fbfcfe;border:1px solid transparent;border-radius:10px;padding:9px 10px;margin-bottom:4px;
+  font-size:12.5px;color:#3a4356;line-height:1.45;cursor:pointer;transition:.13s}
+.row:hover{background:#fff;border-color:#dfe4ee;box-shadow:0 2px 10px -6px rgba(18,22,31,.35);color:var(--ink)}
+.row:active{transform:scale(.995)}
+.pink .row:hover{border-color:#f3c7d8;background:#fffafc}
+.blue .row:hover{border-color:#cfd5f8;background:#fafbff}
+.half .row:hover{border-color:#bfe5e2;background:#f7fdfc}
+.path{flex:1 1 auto;min-width:0;overflow-wrap:anywhere}
+.path .sep{color:#c3c9d8;font-style:normal;margin:0 4px}
+.path .last{color:#12161f;font-weight:500}
+.cp{margin-left:auto;flex:0 0 auto;display:flex;align-items:center;gap:4px;color:#9aa3b5;
+  font-size:11px;opacity:0;transition:.13s}
+.row:hover .cp{opacity:1}
+.cp svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.8}
+.cp em{font-style:normal}
+.row.done{background:#eaf7ef!important;border-color:#b6e3c6!important;color:#1c7d43!important}
+.row.done .cp{opacity:1;color:#1c7d43}
+.row.hide,.block.hide,.owner.hide,.col.hide{display:none}
+.empty{display:none;text-align:center;color:var(--ink3);padding:40px;font-size:13px}
+.panel{display:none}
+.panel.on{display:block}
+
+/* toast */
+#toast{position:fixed;left:50%;bottom:38px;transform:translate(-50%,20px);opacity:0;pointer-events:none;
+  background:#12161f;color:#fff;padding:11px 20px;border-radius:12px;font-size:13px;
+  box-shadow:0 12px 30px -10px rgba(0,0,0,.5);transition:.22s;z-index:99;max-width:90vw}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+#toast b{color:#7ee2a8;font-weight:500}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <h1>彩妆美发 对接人</h1>
+    <p class="lead">类目小组负责人：</p>
+    <p class="lead"><b>杨锦岳 (taki.yang)</b></p>
+    <p class="lead">vx: 13149888188</p>
+    <p class="tip"><span class="k">点击任意类目路径即可一键复制</span></p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" data-tab="full">全托管 <em>74</em></button>
+    <button class="tab" data-tab="half">半托管 <em>32</em></button>
+  </div>
+
+  <!-- 全托管 -->
+  <div class="panel on" id="panel-full">
+    <div class="toolbar">
+      <div class="search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input class="q" placeholder="搜索类目关键词，如 眼影 / 染发 / 卸妆…">
+      </div>
+      <span class="hint">点击行 = 复制类目</span>
+      <button class="tbtn reset">显示全部</button>
+    </div>
+
+    <a class="cta" href="https://agentseller.temu.com/goods/create/category" target="_blank" rel="noopener">
+      <span class="cta-left">
+        <span class="spark">✦</span>
+        <span class="cta-text">立马上新立马爆单</span>
+      </span>
+      <span class="cta-right">
+        <b>去建品</b>
+        <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+      </span>
+    </a>
+
+    <div class="board">
+      <div class="col pink">
+        <div class="col-head"><span class="dot"></span><h2>彩妆板块</h2><span class="tag">30 条类目</span></div>
+        <section class="owner">
+  <div class="owner-head">
+    <span class="avatar">迢</span>
+    <div class="owner-info"><b>迢之 (niki.chen)</b><i class="vx">VX：tiaozhiovo</i></div>
+  </div>
+  <div class="block" data-block>
+  <div class="block-head">
+    <span class="cat">眼部彩妆</span>
+    <span class="count">4</span>
+    <button class="all" data-all="美容和个人护理 &gt; 彩妆 &gt; 眼部 &gt; 眼影|||美容和个人护理 &gt; 彩妆 &gt; 眼部 &gt; 眼线笔和眼影组合|||美容和个人护理 &gt; 彩妆 &gt; 眼部 &gt; 眼部高光|||美容和个人护理 &gt; 彩妆 &gt; 眼部 &gt; 卧蚕笔和卧蚕盘">复制全部</button>
+  </div>
+  <button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 眼部 &gt; 眼影" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>眼部<i class="sep">›</i><span class="last">眼影</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 眼部 &gt; 眼线笔和眼影组合" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>眼部<i class="sep">›</i><span class="last">眼线笔和眼影组合</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 眼部 &gt; 眼部高光" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>眼部<i class="sep">›</i><span class="last">眼部高光</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 眼部 &gt; 卧蚕笔和卧蚕盘" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>眼部<i class="sep">›</i><span class="last">卧蚕笔和卧蚕盘</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button>
+</div><div class="block" data-block>
+  <div class="block-head">
+    <span class="cat">纹身贴
+面部装饰贴
+身体彩妆</span>
+    <span class="count">9</span>
+    <button class="all" data-all="美容和个人护理 &gt; 彩妆 &gt; 身体化妆品 &gt; 闪粉|||美容和个人护理 &gt; 彩妆 &gt; 身体化妆品 &gt; 身体遮瑕|||美容和个人护理 &gt; 彩妆 &gt; 身体化妆品 &gt; 古铜粉|||美容和个人护理 &gt; 彩妆 &gt; 身体化妆品 &gt; 海娜体绘|||美容和个人护理 &gt; 彩妆 &gt; 身体化妆品 &gt; 面部装饰贴|||美容和个人护理 &gt; 彩妆 &gt; 身体化妆品 &gt; 纹身贴|||美容和个人护理 &gt; 彩妆 &gt; 身体化妆品 &gt; 体绘|||艺术品、工艺品和缝纫用品&gt;工艺工具和用品&gt;工艺用品&gt;面部彩绘用品|||服装&gt;鞋靴和珠宝饰品&gt;装扮服饰和配饰&gt;化妆造型用品&gt;假胡子和粘合剂&gt;化妆造型用品">复制全部</button>
+  </div>
+  <button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 身体化妆品 &gt; 闪粉" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>身体化妆品<i class="sep">›</i><span class="last">闪粉</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 身体化妆品 &gt; 身体遮瑕" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>身体化妆品<i class="sep">›</i><span class="last">身体遮瑕</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 身体化妆品 &gt; 古铜粉" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>身体化妆品<i class="sep">›</i><span class="last">古铜粉</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 身体化妆品 &gt; 海娜体绘" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>身体化妆品<i class="sep">›</i><span class="last">海娜体绘</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 身体化妆品 &gt; 面部装饰贴" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>身体化妆品<i class="sep">›</i><span class="last">面部装饰贴</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 身体化妆品 &gt; 纹身贴" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>身体化妆品<i class="sep">›</i><span class="last">纹身贴</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 身体化妆品 &gt; 体绘" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>身体化妆品<i class="sep">›</i><span class="last">体绘</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="艺术品、工艺品和缝纫用品&gt;工艺工具和用品&gt;工艺用品&gt;面部彩绘用品" title="点击复制"><span class="path">艺术品、工艺品和缝纫用品<i class="sep">›</i>工艺工具和用品<i class="sep">›</i>工艺用品<i class="sep">›</i><span class="last">面部彩绘用品</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="服装&gt;鞋靴和珠宝饰品&gt;装扮服饰和配饰&gt;化妆造型用品&gt;假胡子和粘合剂&gt;化妆造型用品" title="点击复制"><span class="path">服装<i class="sep">›</i>鞋靴和珠宝饰品<i class="sep">›</i>装扮服饰和配饰<i class="sep">›</i>化妆造型用品<i class="sep">›</i>假胡子和粘合剂<i class="sep">›</i><span class="last">化妆造型用品</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button>
+</div>
+</section><section class="owner">
+  <div class="owner-head">
+    <span class="avatar">势</span>
+    <div class="owner-info"><b>势能星（lucas.tan）</b><i class="vx">VX：Temu-shinengxing</i></div>
+  </div>
+  <div class="block" data-block>
+  <div class="block-head">
+    <span class="cat">卸妆</span>
+    <span class="count">1</span>
+    <button class="all" data-all="美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 卸妆巾">复制全部</button>
+  </div>
+  <button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 卸妆巾" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>卸妆液<i class="sep">›</i><span class="last">卸妆巾</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button>
+</div>
+</section><section class="owner">
+  <div class="owner-head">
+    <span class="avatar">林</span>
+    <div class="owner-info"><b>林林酱(kika.lin)</b><i class="vx">VX：linjiang333666888</i></div>
+  </div>
+  <div class="block" data-block>
+  <div class="block-head">
+    <span class="cat">卸妆</span>
+    <span class="count">7</span>
+    <button class="all" data-all="美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 卸妆油|||美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 卸妆乳|||美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 卸妆凝胶|||美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 卸妆水|||美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 卸妆泡沫|||美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 卸妆霜|||美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 其他 (卸妆液)">复制全部</button>
+  </div>
+  <button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 卸妆油" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>卸妆液<i class="sep">›</i><span class="last">卸妆油</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 卸妆乳" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>卸妆液<i class="sep">›</i><span class="last">卸妆乳</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 卸妆凝胶" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>卸妆液<i class="sep">›</i><span class="last">卸妆凝胶</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 卸妆水" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>卸妆液<i class="sep">›</i><span class="last">卸妆水</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 卸妆泡沫" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>卸妆液<i class="sep">›</i><span class="last">卸妆泡沫</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 卸妆霜" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>卸妆液<i class="sep">›</i><span class="last">卸妆霜</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 其他 (卸妆液)" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>卸妆液<i class="sep">›</i><span class="last">其他 (卸妆液)</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button>
+</div>
+</section><section class="owner">
+  <div class="owner-head">
+    <span class="avatar">叶</span>
+    <div class="owner-info"><b>叶知暖(sunny.du)</b><i class="vx">VX：yezhinuan888</i></div>
+  </div>
+  <div class="block" data-block>
+  <div class="block-head">
+    <span class="cat">唇部</span>
+    <span class="count">9</span>
+    <button class="all" data-all="美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 口红|||美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 有色润唇膏|||美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 有色唇油|||美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 有色唇部啫喱|||美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 唇彩、唇蜜|||美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 唇釉|||美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 唇线笔|||美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 唇部打底|||美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 其他 (唇部)">复制全部</button>
+  </div>
+  <button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 口红" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>唇部<i class="sep">›</i><span class="last">口红</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 有色润唇膏" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>唇部<i class="sep">›</i><span class="last">有色润唇膏</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 有色唇油" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>唇部<i class="sep">›</i><span class="last">有色唇油</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 有色唇部啫喱" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>唇部<i class="sep">›</i><span class="last">有色唇部啫喱</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 唇彩、唇蜜" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>唇部<i class="sep">›</i><span class="last">唇彩、唇蜜</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 唇釉" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>唇部<i class="sep">›</i><span class="last">唇釉</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 唇线笔" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>唇部<i class="sep">›</i><span class="last">唇线笔</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 唇部打底" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>唇部<i class="sep">›</i><span class="last">唇部打底</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 其他 (唇部)" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>唇部<i class="sep">›</i><span class="last">其他 (唇部)</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button>
+</div>
+</section>
+      </div>
+      <div class="col blue">
+        <div class="col-head"><span class="dot"></span><h2>美发板块</h2><span class="tag">44 条类目</span></div>
+        <section class="owner">
+  <div class="owner-head">
+    <span class="avatar">势</span>
+    <div class="owner-info"><b>势能星（lucas.tan）</b><i class="vx">VX：Temu-shinengxing</i></div>
+  </div>
+  <div class="block" data-block>
+  <div class="block-head">
+    <span class="cat">美发</span>
+    <span class="count">27</span>
+    <button class="all" data-all="美容和个人护理/美发护发/染发/增色护发素/补色发膜|||美容和个人护理/美发护发/染发/增色护发素/补色护发素|||美容和个人护理/美发护发/染发/海娜粉染发产品|||美容和个人护理/美发护发/染发/胡须染色产品|||美容和个人护理/美发护发/染发/增色护发素/焕色亮发膜|||美容和个人护理/美发护发/烫发/家用烫发药水套装|||美容和个人护理/美发护发/染发/其他（染发）|||美容和个人护理/美发护发/烫发/其他（烫发）|||美容和个人护理/美发护发/染发/增色护发素/其他（增色护发素）|||美容和个人护理/美发护发/染发/增色护发素/去黄中和调色产品|||美容和个人护理/美发护发/染发/染发粉笔|||美容和个人护理/美发护发/染发/染发剂|||美容和个人护理/美发护发/染发/染发剂和填充剂|||美容和个人护理/美发护发/染发/染发双氧显色剂|||美容和个人护理/美发护发/烫发/顺发直发膏|||美容和个人护理/美发护发/染发/头发补色剂|||美容和个人护理/美发护发/染发/头发漂白剂|||美容和个人护理/美发护发/烫发/头发软化膏|||美容和个人护理/美发护发/染发/头发洗色产品|||美容和个人护理/美发护发/烫发/自然卷直发膏|||美容和个人护理/美发护发/防脱发/其他（防脱发）|||美容和个人护理/美发护发/防脱发/生发剂|||美容和个人护理/美发护发/防脱发/生发洗发水|||美容和个人护理/美发护发/防脱发/生发用品|||美容和个人护理/美发护发/防脱发/生发治疗|||美容和个人护理/美发护发/防脱发/生发滋补剂|||美容和个人护理/美发护发/防脱发/增发纤维">复制全部</button>
+  </div>
+  <button class="row" data-copy="美容和个人护理/美发护发/染发/增色护发素/补色发膜" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>染发<i class="sep">›</i>增色护发素<i class="sep">›</i><span class="last">补色发膜</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/染发/增色护发素/补色护发素" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>染发<i class="sep">›</i>增色护发素<i class="sep">›</i><span class="last">补色护发素</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/染发/海娜粉染发产品" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>染发<i class="sep">›</i><span class="last">海娜粉染发产品</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/染发/胡须染色产品" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>染发<i class="sep">›</i><span class="last">胡须染色产品</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/染发/增色护发素/焕色亮发膜" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>染发<i class="sep">›</i>增色护发素<i class="sep">›</i><span class="last">焕色亮发膜</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/烫发/家用烫发药水套装" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>烫发<i class="sep">›</i><span class="last">家用烫发药水套装</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/染发/其他（染发）" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>染发<i class="sep">›</i><span class="last">其他（染发）</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/烫发/其他（烫发）" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>烫发<i class="sep">›</i><span class="last">其他（烫发）</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/染发/增色护发素/其他（增色护发素）" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>染发<i class="sep">›</i>增色护发素<i class="sep">›</i><span class="last">其他（增色护发素）</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/染发/增色护发素/去黄中和调色产品" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>染发<i class="sep">›</i>增色护发素<i class="sep">›</i><span class="last">去黄中和调色产品</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/染发/染发粉笔" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>染发<i class="sep">›</i><span class="last">染发粉笔</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/染发/染发剂" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>染发<i class="sep">›</i><span class="last">染发剂</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/染发/染发剂和填充剂" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>染发<i class="sep">›</i><span class="last">染发剂和填充剂</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/染发/染发双氧显色剂" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>染发<i class="sep">›</i><span class="last">染发双氧显色剂</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/烫发/顺发直发膏" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>烫发<i class="sep">›</i><span class="last">顺发直发膏</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/染发/头发补色剂" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>染发<i class="sep">›</i><span class="last">头发补色剂</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/染发/头发漂白剂" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>染发<i class="sep">›</i><span class="last">头发漂白剂</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/烫发/头发软化膏" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>烫发<i class="sep">›</i><span class="last">头发软化膏</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/染发/头发洗色产品" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>染发<i class="sep">›</i><span class="last">头发洗色产品</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/烫发/自然卷直发膏" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>烫发<i class="sep">›</i><span class="last">自然卷直发膏</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/防脱发/其他（防脱发）" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>防脱发<i class="sep">›</i><span class="last">其他（防脱发）</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/防脱发/生发剂" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>防脱发<i class="sep">›</i><span class="last">生发剂</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/防脱发/生发洗发水" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>防脱发<i class="sep">›</i><span class="last">生发洗发水</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/防脱发/生发用品" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>防脱发<i class="sep">›</i><span class="last">生发用品</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/防脱发/生发治疗" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>防脱发<i class="sep">›</i><span class="last">生发治疗</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/防脱发/生发滋补剂" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>防脱发<i class="sep">›</i><span class="last">生发滋补剂</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/防脱发/增发纤维" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>防脱发<i class="sep">›</i><span class="last">增发纤维</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button>
+</div><div class="block" data-block>
+  <div class="block-head">
+    <span class="cat">纹身护理</span>
+    <span class="count">4</span>
+    <button class="all" data-all="健康和家居用品/个人护理/穿洞和纹身用品/身体穿洞用品/身体穿洞术后护理产品|||健康和家居用品/个人护理/穿洞和纹身用品/纹身用品/纹身术后护理产品|||美容和个人护理/个人护理/穿洞和纹身用品/身体穿洞用品/身体穿洞术后护理产品|||美容和个人护理/个人护理/穿洞和纹身用品/纹身用品/纹身术后护理产品">复制全部</button>
+  </div>
+  <button class="row" data-copy="健康和家居用品/个人护理/穿洞和纹身用品/身体穿洞用品/身体穿洞术后护理产品" title="点击复制"><span class="path">健康和家居用品<i class="sep">›</i>个人护理<i class="sep">›</i>穿洞和纹身用品<i class="sep">›</i>身体穿洞用品<i class="sep">›</i><span class="last">身体穿洞术后护理产品</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="健康和家居用品/个人护理/穿洞和纹身用品/纹身用品/纹身术后护理产品" title="点击复制"><span class="path">健康和家居用品<i class="sep">›</i>个人护理<i class="sep">›</i>穿洞和纹身用品<i class="sep">›</i>纹身用品<i class="sep">›</i><span class="last">纹身术后护理产品</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/个人护理/穿洞和纹身用品/身体穿洞用品/身体穿洞术后护理产品" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>个人护理<i class="sep">›</i>穿洞和纹身用品<i class="sep">›</i>身体穿洞用品<i class="sep">›</i><span class="last">身体穿洞术后护理产品</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/个人护理/穿洞和纹身用品/纹身用品/纹身术后护理产品" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>个人护理<i class="sep">›</i>穿洞和纹身用品<i class="sep">›</i>纹身用品<i class="sep">›</i><span class="last">纹身术后护理产品</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button>
+</div>
+</section><section class="owner">
+  <div class="owner-head">
+    <span class="avatar">林</span>
+    <div class="owner-info"><b>林林酱(kika.lin)</b><i class="vx">VX：linjiang333666888</i></div>
+  </div>
+  <div class="block" data-block>
+  <div class="block-head">
+    <span class="cat">美发</span>
+    <span class="count">13</span>
+    <button class="all" data-all="美容和个人护理/美发护发/洗发水和护发素/3 合 1 洗发水、护发素和沐浴露|||美容和个人护理/美发护发/发膜|||美容和个人护理/美发护发/洗发水和护发素/护发素与护发喷雾|||美容和个人护理/美发护发/洗发水和护发素/免水洗发|||美容和个人护理/美发护发/其他（美发护发）|||美容和个人护理/美发护发/洗发水和护发素/深层护发素|||美容和个人护理/美发护发/头发护理产品组合和套装|||美容和个人护理/美发护发/头皮护理|||美容和个人护理/美发护发/洗发水和护发素/洗发|||美容和个人护理/美发护发/洗发水和护发素/洗护二合一洗发水|||美容和个人护理/美发护发/洗发水和护发素/洗护套装|||运动与户外用品/户外休闲/露营、徒步用品/户外个人护理/其他（户外个人护理）|||运动与户外用品/户外休闲/露营、徒步用品/户外个人护理/露营肥皂、洗发水">复制全部</button>
+  </div>
+  <button class="row" data-copy="美容和个人护理/美发护发/洗发水和护发素/3 合 1 洗发水、护发素和沐浴露" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>洗发水和护发素<i class="sep">›</i><span class="last">3 合 1 洗发水、护发素和沐浴露</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/发膜" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i><span class="last">发膜</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/洗发水和护发素/护发素与护发喷雾" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>洗发水和护发素<i class="sep">›</i><span class="last">护发素与护发喷雾</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/洗发水和护发素/免水洗发" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>洗发水和护发素<i class="sep">›</i><span class="last">免水洗发</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/其他（美发护发）" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i><span class="last">其他（美发护发）</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/洗发水和护发素/深层护发素" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>洗发水和护发素<i class="sep">›</i><span class="last">深层护发素</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/头发护理产品组合和套装" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i><span class="last">头发护理产品组合和套装</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/头皮护理" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i><span class="last">头皮护理</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/洗发水和护发素/洗发" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>洗发水和护发素<i class="sep">›</i><span class="last">洗发</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/洗发水和护发素/洗护二合一洗发水" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>洗发水和护发素<i class="sep">›</i><span class="last">洗护二合一洗发水</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理/美发护发/洗发水和护发素/洗护套装" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>美发护发<i class="sep">›</i>洗发水和护发素<i class="sep">›</i><span class="last">洗护套装</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="运动与户外用品/户外休闲/露营、徒步用品/户外个人护理/其他（户外个人护理）" title="点击复制"><span class="path">运动与户外用品<i class="sep">›</i>户外休闲<i class="sep">›</i>露营、徒步用品<i class="sep">›</i>户外个人护理<i class="sep">›</i><span class="last">其他（户外个人护理）</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="运动与户外用品/户外休闲/露营、徒步用品/户外个人护理/露营肥皂、洗发水" title="点击复制"><span class="path">运动与户外用品<i class="sep">›</i>户外休闲<i class="sep">›</i>露营、徒步用品<i class="sep">›</i>户外个人护理<i class="sep">›</i><span class="last">露营肥皂、洗发水</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button>
+</div>
+</section>
+      </div>
+    </div>
+    <div class="empty">没有匹配的类目，换个关键词试试～</div>
+  </div>
+
+  <!-- 半托管 -->
+  <div class="panel half" id="panel-half">
+    <div class="toolbar">
+      <div class="search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input class="q" placeholder="搜索半托类目关键词，如 眼影 / 卸妆 / 口红…">
+      </div>
+      <span class="hint">点击行 = 复制类目</span>
+      <button class="tbtn reset">显示全部</button>
+    </div>
+
+    <div class="board">
+      <section class="owner">
+  <div class="owner-head">
+    <span class="avatar">游</span>
+    <div class="owner-info"><b>游望舒 (lilah.li)</b><i class="sub">眼部彩妆+身体彩妆</i><i class="vx">VX：Lilah_LI_Yq</i></div>
+  </div>
+  <div class="block" data-block>
+  <div class="block-head">
+    <span class="cat">眼部彩妆</span>
+    <span class="count">4</span>
+    <button class="all" data-all="美容和个人护理 &gt; 彩妆 &gt; 眼部 &gt; 眼影|||美容和个人护理 &gt; 彩妆 &gt; 眼部 &gt; 眼线笔和眼影组合|||美容和个人护理 &gt; 彩妆 &gt; 眼部 &gt; 眼部高光|||美容和个人护理 &gt; 彩妆 &gt; 眼部 &gt; 卧蚕笔和卧蚕盘">复制全部</button>
+  </div>
+  <button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 眼部 &gt; 眼影" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>眼部<i class="sep">›</i><span class="last">眼影</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 眼部 &gt; 眼线笔和眼影组合" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>眼部<i class="sep">›</i><span class="last">眼线笔和眼影组合</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 眼部 &gt; 眼部高光" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>眼部<i class="sep">›</i><span class="last">眼部高光</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 眼部 &gt; 卧蚕笔和卧蚕盘" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>眼部<i class="sep">›</i><span class="last">卧蚕笔和卧蚕盘</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button>
+</div><div class="block" data-block>
+  <div class="block-head">
+    <span class="cat">身体彩妆（纹身贴 面部装饰 身体彩绘）</span>
+    <span class="count">9</span>
+    <button class="all" data-all="美容和个人护理 &gt; 彩妆 &gt; 身体化妆品 &gt; 闪粉|||美容和个人护理 &gt; 彩妆 &gt; 身体化妆品 &gt; 身体遮瑕|||美容和个人护理 &gt; 彩妆 &gt; 身体化妆品 &gt; 古铜粉|||美容和个人护理 &gt; 彩妆 &gt; 身体化妆品 &gt; 海娜体绘|||美容和个人护理 &gt; 彩妆 &gt; 身体化妆品 &gt; 面部装饰贴|||美容和个人护理 &gt; 彩妆 &gt; 身体化妆品 &gt; 纹身贴|||美容和个人护理 &gt; 彩妆 &gt; 身体化妆品 &gt; 体绘|||艺术品、工艺品和缝纫用品&gt;工艺工具和用品&gt;工艺用品&gt;面部彩绘用品|||服装&gt;鞋靴和珠宝饰品&gt;装扮服饰和配饰&gt;化妆造型用品&gt;假胡子和粘合剂&gt;化妆造型用品">复制全部</button>
+  </div>
+  <button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 身体化妆品 &gt; 闪粉" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>身体化妆品<i class="sep">›</i><span class="last">闪粉</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 身体化妆品 &gt; 身体遮瑕" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>身体化妆品<i class="sep">›</i><span class="last">身体遮瑕</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 身体化妆品 &gt; 古铜粉" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>身体化妆品<i class="sep">›</i><span class="last">古铜粉</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 身体化妆品 &gt; 海娜体绘" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>身体化妆品<i class="sep">›</i><span class="last">海娜体绘</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 身体化妆品 &gt; 面部装饰贴" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>身体化妆品<i class="sep">›</i><span class="last">面部装饰贴</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 身体化妆品 &gt; 纹身贴" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>身体化妆品<i class="sep">›</i><span class="last">纹身贴</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 身体化妆品 &gt; 体绘" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>身体化妆品<i class="sep">›</i><span class="last">体绘</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="艺术品、工艺品和缝纫用品&gt;工艺工具和用品&gt;工艺用品&gt;面部彩绘用品" title="点击复制"><span class="path">艺术品、工艺品和缝纫用品<i class="sep">›</i>工艺工具和用品<i class="sep">›</i>工艺用品<i class="sep">›</i><span class="last">面部彩绘用品</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="服装&gt;鞋靴和珠宝饰品&gt;装扮服饰和配饰&gt;化妆造型用品&gt;假胡子和粘合剂&gt;化妆造型用品" title="点击复制"><span class="path">服装<i class="sep">›</i>鞋靴和珠宝饰品<i class="sep">›</i>装扮服饰和配饰<i class="sep">›</i>化妆造型用品<i class="sep">›</i>假胡子和粘合剂<i class="sep">›</i><span class="last">化妆造型用品</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button>
+</div>
+</section><section class="owner">
+  <div class="owner-head">
+    <span class="avatar">秦</span>
+    <div class="owner-info"><b>秦丁冬 (aria.mo)</b><i class="sub">唇部彩妆</i><i class="vx">VX：temu-qindingdong</i></div>
+  </div>
+  <div class="block" data-block>
+  <div class="block-head">
+    <span class="cat">卸妆</span>
+    <span class="count">8</span>
+    <button class="all" data-all="美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 卸妆巾|||美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 卸妆油|||美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 卸妆乳|||美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 卸妆凝胶|||美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 卸妆水|||美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 卸妆泡沫|||美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 卸妆霜|||美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 其他 (卸妆液)">复制全部</button>
+  </div>
+  <button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 卸妆巾" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>卸妆液<i class="sep">›</i><span class="last">卸妆巾</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 卸妆油" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>卸妆液<i class="sep">›</i><span class="last">卸妆油</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 卸妆乳" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>卸妆液<i class="sep">›</i><span class="last">卸妆乳</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 卸妆凝胶" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>卸妆液<i class="sep">›</i><span class="last">卸妆凝胶</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 卸妆水" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>卸妆液<i class="sep">›</i><span class="last">卸妆水</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 卸妆泡沫" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>卸妆液<i class="sep">›</i><span class="last">卸妆泡沫</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 卸妆霜" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>卸妆液<i class="sep">›</i><span class="last">卸妆霜</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 卸妆液 &gt; 其他 (卸妆液)" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>卸妆液<i class="sep">›</i><span class="last">其他 (卸妆液)</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button>
+</div><div class="block" data-block>
+  <div class="block-head">
+    <span class="cat">其他</span>
+    <span class="count">1</span>
+    <button class="all" data-all="美容和个人护理 &gt; 彩妆 &gt; 其他 (彩妆)">复制全部</button>
+  </div>
+  <button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 其他 (彩妆)" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i><span class="last">其他 (彩妆)</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button>
+</div><div class="block" data-block>
+  <div class="block-head">
+    <span class="cat">户外旅行场景用品</span>
+    <span class="count">1</span>
+    <button class="all" data-all="运动与户外用品 &gt; 户外休闲 &gt; 露营、徒步用品 &gt; 户外个人护理 &gt; 露营肥皂、洗发水">复制全部</button>
+  </div>
+  <button class="row" data-copy="运动与户外用品 &gt; 户外休闲 &gt; 露营、徒步用品 &gt; 户外个人护理 &gt; 露营肥皂、洗发水" title="点击复制"><span class="path">运动与户外用品<i class="sep">›</i>户外休闲<i class="sep">›</i>露营、徒步用品<i class="sep">›</i>户外个人护理<i class="sep">›</i><span class="last">露营肥皂、洗发水</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button>
+</div><div class="block" data-block>
+  <div class="block-head">
+    <span class="cat">唇部彩妆</span>
+    <span class="count">9</span>
+    <button class="all" data-all="美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 口红|||美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 有色润唇膏|||美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 有色唇油|||美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 有色唇部啫喱|||美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 唇彩、唇蜜|||美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 唇釉|||美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 唇线笔|||美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 唇部打底|||美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 其他 (唇部)">复制全部</button>
+  </div>
+  <button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 口红" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>唇部<i class="sep">›</i><span class="last">口红</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 有色润唇膏" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>唇部<i class="sep">›</i><span class="last">有色润唇膏</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 有色唇油" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>唇部<i class="sep">›</i><span class="last">有色唇油</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 有色唇部啫喱" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>唇部<i class="sep">›</i><span class="last">有色唇部啫喱</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 唇彩、唇蜜" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>唇部<i class="sep">›</i><span class="last">唇彩、唇蜜</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 唇釉" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>唇部<i class="sep">›</i><span class="last">唇釉</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 唇线笔" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>唇部<i class="sep">›</i><span class="last">唇线笔</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 唇部打底" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>唇部<i class="sep">›</i><span class="last">唇部打底</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button><button class="row" data-copy="美容和个人护理 &gt; 彩妆 &gt; 唇部 &gt; 其他 (唇部)" title="点击复制"><span class="path">美容和个人护理<i class="sep">›</i>彩妆<i class="sep">›</i>唇部<i class="sep">›</i><span class="last">其他 (唇部)</span></span><span class="cp"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><em>复制</em></span></button>
+</div>
+</section>
+    </div>
+    <div class="empty">没有匹配的类目，换个关键词试试～</div>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script>
+const toast = document.getElementById('toast');
+let timer;
+function showToast(msg){
+  toast.innerHTML = msg;
+  toast.classList.add('show');
+  clearTimeout(timer);
+  timer = setTimeout(()=>toast.classList.remove('show'), 1800);
+}
+async function copyText(text){
+  try{
+    if(navigator.clipboard && window.isSecureContext){
+      await navigator.clipboard.writeText(text); return true;
+    }
+  }catch(e){}
+  try{
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;top:-1000px;left:0;opacity:0';
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  }catch(e){ return false; }
+}
+async function doCopy(text, el){
+  const ok = await copyText(text);
+  if(ok){
+    if(el){
+      el.classList.add('done');
+      setTimeout(()=>el.classList.remove('done'), 1100);
+    }
+    showToast('<b>✓ 已复制</b>　' + text.slice(0,42) + (text.length>42?'…':''));
+  }else{
+    showToast('浏览器限制了自动复制，请手动选中文本复制');
+  }
+}
+document.querySelectorAll('.row').forEach(btn=>{
+  btn.addEventListener('click', ()=>doCopy(btn.dataset.copy, btn));
+});
+document.querySelectorAll('.all').forEach(btn=>{
+  btn.addEventListener('click', e=>{
+    e.stopPropagation();
+    doCopy(btn.dataset.all.split('|||').join('\n'), btn.closest('.block'));
+  });
+});
+
+/* 面板内搜索 */
+document.querySelectorAll('.panel').forEach(panel=>{
+  const q = panel.querySelector('.q');
+  const empty = panel.querySelector('.empty');
+  const reset = panel.querySelector('.reset');
+  if(!q) return;
+  q.addEventListener('input', ()=>{
+    const kw = q.value.trim().toLowerCase();
+    let visible = 0;
+    panel.querySelectorAll('.block').forEach(b=>{
+      const catText = b.querySelector('.cat').textContent.toLowerCase();
+      let hit = 0;
+      b.querySelectorAll('.row').forEach(r=>{
+        const t = r.dataset.copy.toLowerCase();
+        const ok = !kw || t.includes(kw) || catText.includes(kw);
+        r.classList.toggle('hide', !ok);
+        if(ok) hit++;
+      });
+      b.classList.toggle('hide', hit === 0);
+      visible += hit;
+    });
+    panel.querySelectorAll('.owner').forEach(o=>{
+      const any = [...o.querySelectorAll('.block')].some(b=>!b.classList.contains('hide'));
+      o.classList.toggle('hide', !any);
+    });
+    panel.querySelectorAll('.col').forEach(c=>{
+      const any = [...c.querySelectorAll('.block')].some(b=>!b.classList.contains('hide'));
+      c.classList.toggle('hide', !any);
+    });
+    if(empty) empty.style.display = visible === 0 ? 'block' : 'none';
+  });
+  if(reset) reset.addEventListener('click', ()=>{
+    q.value = ''; q.dispatchEvent(new Event('input')); q.focus();
+  });
+});
+
+/* Tab 切换 */
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on', t===tab));
+    document.querySelectorAll('.panel').forEach(p=>{
+      p.classList.toggle('on', p.id === 'panel-' + tab.dataset.tab);
+    });
+    const input = document.querySelector('#panel-' + tab.dataset.tab + ' .q');
+    if(input) input.focus({preventScroll:true});
+  });
+});
+
+document.addEventListener('keydown', e=>{
+  const active = document.querySelector('.panel.on .q');
+  if(e.key === '/' && active && document.activeElement !== active){ e.preventDefault(); active.focus(); }
+  if(e.key === 'Escape' && active){ active.value=''; active.dispatchEvent(new Event('input')); active.blur(); }
+});
+</script>
+</body>
+</html>
